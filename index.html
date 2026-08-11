@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Overseas Sales Dashboard · Guatemala Market H1 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#FFFFFF;
+    --bg-soft:#F7F8FB;
+    --bg-soft-2:#F1F3F9;
+    --border:#E6E9F1;
+    --indigo-700:#4338CA;
+    --indigo-600:#4F46E5;
+    --indigo-500:#6366F1;
+    --indigo-100:#E5E4FB;
+    --blue-500:#3B82F6;
+    --sky-400:#60A5FA;
+    --slate-300:#CBD2E0;
+    --text-900:#111827;
+    --text-600:#4B5563;
+    --text-400:#94A0B4;
+    --green-600:#16A34A;
+    --green-100:#E3F7EA;
+    --red-500:#EF4444;
+    --red-100:#FDEBEB;
+    --amber-500:#F59E0B;
+    --amber-100:#FEF3DE;
+    --radius:10px;
+    --shadow-sm:0 1px 2px rgba(17,24,39,.04);
+    --shadow-md:0 8px 24px -12px rgba(67,56,202,.18);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    background:var(--bg-soft);
+    color:var(--text-900);
+    -webkit-font-smoothing:antialiased;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:inherit;cursor:pointer;}
+  input,select{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--indigo-600);outline-offset:2px;}
+
+  .app{max-width:1360px;margin:0 auto;padding:0 28px 60px;}
+
+  /* ===== HEADER ===== */
+  header{
+    position:sticky;top:0;z-index:40;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--border);
+  }
+  .header-inner{
+    max-width:1360px;margin:0 auto;padding:20px 28px;
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .title-block{display:flex;align-items:center;gap:12px;}
+  .logo-mark{
+    width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--indigo-600),var(--blue-500));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;
+  }
+  h1{font-size:18px;font-weight:800;letter-spacing:-.01em;}
+  .subtitle{font-size:12.5px;color:var(--text-400);margin-top:2px;display:flex;align-items:center;gap:6px;}
+  .flag-chip{
+    display:inline-flex;align-items:center;gap:5px;background:var(--indigo-100);color:var(--indigo-700);
+    font-weight:700;font-size:11px;padding:2px 8px;border-radius:99px;letter-spacing:.02em;
+  }
+
+  /* date range picker */
+  .range-picker{
+    display:flex;align-items:center;gap:8px;background:var(--bg-soft);border:1px solid var(--border);
+    padding:6px 8px;border-radius:9px;
+  }
+  .range-picker label{font-size:11px;color:var(--text-400);font-weight:600;padding-left:4px;}
+  .range-picker input[type="date"]{
+    border:none;background:transparent;font-size:13px;font-weight:600;color:var(--text-900);
+    padding:4px 6px;border-radius:6px;
+  }
+  .range-picker input[type="date"]:hover{background:var(--bg-soft-2);}
+  .range-sep{color:var(--text-400);font-size:12px;}
+  .btn-apply{
+    background:var(--indigo-600);color:#fff;border:none;padding:8px 16px;border-radius:8px;
+    font-size:12.5px;font-weight:700;transition:background .2s ease, transform .2s ease;
+  }
+  .btn-apply:hover{background:var(--indigo-700);transform:translateY(-1px);}
+  .btn-reset{
+    background:none;border:1px solid var(--border);color:var(--text-600);padding:8px 14px;border-radius:8px;
+    font-size:12.5px;font-weight:600;transition:border-color .2s ease,color .2s ease;
+  }
+  .btn-reset:hover{border-color:var(--indigo-500);color:var(--indigo-600);}
+
+  section{margin-top:28px;}
+  .section-title{
+    font-size:13px;font-weight:700;color:var(--text-600);text-transform:uppercase;letter-spacing:.06em;
+    margin-bottom:14px;display:flex;align-items:center;gap:8px;
+  }
+  .section-title::after{content:"";flex:1;height:1px;background:var(--border);}
+
+  /* ===== KPI CARDS ===== */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .kpi-card{
+    position:relative;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);
+    padding:20px 20px 18px 22px;box-shadow:var(--shadow-sm);overflow:hidden;
+    transition:box-shadow .25s ease, transform .25s ease;
+  }
+  .kpi-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+  .kpi-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent,var(--indigo-600));}
+  .kpi-top{display:flex;justify-content:space-between;align-items:flex-start;}
+  .kpi-icon{
+    width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+    background:var(--accent-soft,var(--indigo-100));color:var(--accent,var(--indigo-600));
+  }
+  .kpi-icon svg{width:16px;height:16px;}
+  .kpi-label{font-size:12px;color:var(--text-400);font-weight:600;margin-top:14px;}
+  .kpi-value{font-size:26px;font-weight:700;margin-top:4px;letter-spacing:-.01em;}
+  .kpi-foot{margin-top:10px;display:flex;align-items:center;gap:6px;font-size:12px;}
+  .badge{
+    display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:99px;font-weight:700;font-size:11px;
+  }
+  .badge.up{background:var(--green-100);color:var(--green-600);}
+  .badge.down{background:var(--red-100);color:var(--red-500);}
+  .badge.flat{background:var(--bg-soft-2);color:var(--text-600);}
+  .kpi-foot .ctx{color:var(--text-400);}
+
+  /* ===== CHARTS ===== */
+  .chart-grid{display:grid;grid-template-columns:1.7fr 1fr;gap:16px;align-items:stretch;}
+  .chart-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:stretch;}
+  .panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);}
+  .panel-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;}
+  .panel-head h3{font-size:14.5px;font-weight:700;}
+  .panel-head .hint{font-size:11.5px;color:var(--text-400);}
+  .legend-row{display:flex;gap:16px;margin-top:2px;margin-bottom:10px;flex-wrap:wrap;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-600);font-weight:600;}
+  .legend-dot{width:9px;height:9px;border-radius:3px;}
+  .chart-box{position:relative;height:280px;}
+  .chart-box.small{height:280px;}
+  .pie-center-label{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;
+  }
+  .pie-center-label .num{font-size:20px;font-weight:800;font-family:'JetBrains Mono',monospace;}
+  .pie-center-label .lbl{font-size:10.5px;color:var(--text-400);font-weight:600;margin-top:2px;}
+
+  /* ===== TABLE ===== */
+  .table-panel{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden;}
+  .table-head{
+    display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border);
+    gap:16px;flex-wrap:wrap;
+  }
+  .table-head h3{font-size:14.5px;font-weight:700;}
+  .table-head .hint{font-size:11.5px;color:var(--text-400);margin-top:2px;}
+  .table-controls{display:flex;gap:8px;align-items:center;}
+  .table-controls select, .table-controls input[type="search"]{
+    border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:12.5px;color:var(--text-900);background:var(--bg-soft);
+  }
+  .table-controls input[type="search"]{width:170px;}
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-400);
+    font-weight:700;padding:12px 20px;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;
+    user-select:none;
+  }
+  thead th:hover{color:var(--indigo-600);}
+  thead th .arrow{display:inline-block;margin-left:3px;opacity:.4;font-size:10px;}
+  thead th[aria-sort="ascending"] .arrow, thead th[aria-sort="descending"] .arrow{opacity:1;color:var(--indigo-600);}
+  tbody td{padding:14px 20px;border-bottom:1px solid var(--border);font-size:13px;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--bg-soft);}
+  td.amount{font-family:'JetBrains Mono',monospace;font-weight:600;}
+  .cat-pill{
+    display:inline-flex;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;
+  }
+  .cat-Equipment{background:var(--indigo-100);color:var(--indigo-700);}
+  .cat-VM{background:#DDEFFC;color:#0B5FA8;}
+  .cat-Oil{background:var(--amber-100);color:#8A5A05;}
+  .cat-Breaker{background:#E7EAFB;color:#4239A6;}
+  .status-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:var(--text-600);}
+  .status-dot{width:7px;height:7px;border-radius:50%;}
+  .dot-Delivered{background:var(--green-600);}
+  .dot-InTransit{background:var(--blue-500);}
+  .dot-Invoiced{background:var(--amber-500);}
+  .dot-Quoted{background:var(--text-400);}
+  .empty-row td{text-align:center;color:var(--text-400);padding:32px;font-size:13px;}
+
+  footer{margin-top:36px;text-align:center;font-size:11.5px;color:var(--text-400);}
+
+  @media (max-width:1080px){
+    .kpi-grid{grid-template-columns:repeat(2,1fr);}
+    .chart-grid{grid-template-columns:1fr;}
+    .chart-grid-3{grid-template-columns:1fr;}
+  }
+  @media (max-width:640px){
+    .app{padding:0 16px 40px;}
+    .header-inner{padding:16px;}
+    .kpi-grid{grid-template-columns:1fr;}
+    .range-picker{flex-wrap:wrap;}
+    table{font-size:12px;}
+    thead th, tbody td{padding:10px 12px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="title-block">
+      <div class="logo-mark">OS</div>
+      <div>
+        <h1>Overseas Sales Dashboard</h1>
+        <p class="subtitle">Overseas Sales Performance <span class="flag-chip">🇬🇹 Guatemala</span></p>
+      </div>
+    </div>
+    <div class="range-picker" role="group" aria-label="Select date range">
+      <label for="startDate">From</label>
+      <input type="date" id="startDate" value="2026-01-01" min="2026-01-01" max="2026-06-30">
+      <span class="range-sep">–</span>
+      <label for="endDate">To</label>
+      <input type="date" id="endDate" value="2026-06-30" min="2026-01-01" max="2026-06-30">
+      <button class="btn-apply" id="applyRange">Apply</button>
+      <button class="btn-reset" id="resetRange">Full H1</button>
+    </div>
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- ===== KPI ===== -->
+  <section id="kpiSection">
+    <div class="section-title">Key Performance Indicators</div>
+    <div class="kpi-grid">
+      <div class="kpi-card" style="--accent:var(--indigo-600);--accent-soft:var(--indigo-100);">
+        <div class="kpi-top">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></div>
+        </div>
+        <p class="kpi-label">Total Revenue</p>
+        <p class="kpi-value mono" id="kpiTotal">$7.93M</p>
+        <div class="kpi-foot"><span class="badge up" id="kpiTotalBadge">▲ 18.2%</span><span class="ctx">vs. same period last year</span></div>
+      </div>
+
+      <div class="kpi-card" style="--accent:var(--blue-500);--accent-soft:#DDEFFC;">
+        <div class="kpi-top">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 10h18M8 3v3M16 3v3"/></svg></div>
+        </div>
+        <p class="kpi-label">Monthly Avg Revenue</p>
+        <p class="kpi-value mono" id="kpiMonthly">$1.32M</p>
+        <div class="kpi-foot"><span class="badge up" id="kpiMonthlyBadge">▲ 6.4%</span><span class="ctx">vs. previous month</span></div>
+      </div>
+
+      <div class="kpi-card" style="--accent:#0B8A6B;--accent-soft:#DDF5EE;">
+        <div class="kpi-top">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 20a8 8 0 100-16 8 8 0 000 16z"/><path d="M12 8v4l3 2"/></svg></div>
+        </div>
+        <p class="kpi-label">PM Rate (Preventive Maintenance Coverage)</p>
+        <p class="kpi-value mono">42.6%</p>
+        <div class="kpi-foot"><span class="badge up">▲ 3.1pt</span><span class="ctx">vs. same period last year</span></div>
+      </div>
+
+      <div class="kpi-card" style="--accent:var(--amber-500);--accent-soft:var(--amber-100);">
+        <div class="kpi-top">
+          <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6" fill="currentColor"/></svg></div>
+        </div>
+        <p class="kpi-label">Potential (Pipeline)</p>
+        <p class="kpi-value mono">$2.15M</p>
+        <div class="kpi-foot"><span class="badge flat">12 opportunities in progress</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CHARTS ===== -->
+  <section>
+    <div class="section-title">Sales Analytics</div>
+
+    <div class="panel" style="margin-bottom:16px;">
+      <div class="panel-head">
+        <h3>Monthly Revenue Trend — vs. Prior Year (Line)</h3>
+        <span class="hint" id="lineRangeHint">2026.01 – 2026.06</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-dot" style="background:var(--indigo-600);"></span>2026 (Current)</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--slate-300);"></span>2025 (Prior Year)</span>
+      </div>
+      <div class="chart-box"><canvas id="lineChart"></canvas></div>
+    </div>
+
+    <div class="chart-grid-3">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Equipment vs. Parts Revenue (Bar)</h3>
+          <span class="hint" id="barRangeHint">2026.01 – 2026.06</span>
+        </div>
+        <div class="legend-row">
+          <span class="legend-item"><span class="legend-dot" style="background:var(--indigo-600);"></span>Equipment</span>
+          <span class="legend-item"><span class="legend-dot" style="background:var(--sky-400);"></span>Parts</span>
+        </div>
+        <div class="chart-box small"><canvas id="barChart"></canvas></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Sales Share by Category (Doughnut)</h3>
+        </div>
+        <div class="chart-box small" style="margin-top:12px;">
+          <canvas id="pieChart"></canvas>
+          <div class="pie-center-label"><div class="num mono" id="pieCenterValue">$7.93M</div><div class="lbl">TOTAL</div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Revenue Ranking by Category (Horizontal Bar)</h3>
+        </div>
+        <div class="chart-box small" style="margin-top:12px;"><canvas id="hbarChart"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-title">Category Trend Detail</div>
+    <div class="panel">
+      <div class="panel-head">
+        <h3>Parts Sub-category Trend — VM · Oil · Breaker (Stacked Area)</h3>
+        <span class="hint" id="areaRangeHint">2026.01 – 2026.06</span>
+      </div>
+      <div class="legend-row">
+        <span class="legend-item"><span class="legend-dot" style="background:#4F46E5;"></span>VM</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#F59E0B;"></span>Oil</span>
+        <span class="legend-item"><span class="legend-dot" style="background:#818CF8;"></span>Breaker</span>
+      </div>
+      <div class="chart-box"><canvas id="areaChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ===== TABLE ===== -->
+  <section>
+    <div class="section-title">Transaction Detail</div>
+    <div class="table-panel">
+      <div class="table-head">
+        <div>
+          <h3>Recent Transactions</h3>
+          <p class="hint">Guatemala sites · Click a column to sort</p>
+        </div>
+        <div class="table-controls">
+          <input type="search" id="txSearch" placeholder="Search customer / product">
+          <select id="txFilter">
+            <option value="all">All Categories</option>
+            <option value="Equipment">Equipment</option>
+            <option value="VM">VM</option>
+            <option value="Oil">Oil</option>
+            <option value="Breaker">Breaker</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table aria-describedby="txSection">
+          <thead>
+            <tr>
+              <th data-key="date" aria-sort="descending">Date <span class="arrow">↓</span></th>
+              <th data-key="customer" aria-sort="none">Customer / Site <span class="arrow">↕</span></th>
+              <th data-key="category" aria-sort="none">Category <span class="arrow">↕</span></th>
+              <th data-key="product" aria-sort="none">Product <span class="arrow">↕</span></th>
+              <th data-key="amount" aria-sort="none">Amount (USD) <span class="arrow">↕</span></th>
+              <th data-key="status" aria-sort="none">Status <span class="arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="txBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>Data as of 2026-06-30 · Internal use only · Overseas Sales Team</footer>
+</div>
+
+<script>
+(function(){
+  // ================= DATA =================
+  // Equipment monthly avg = 1195K, Parts monthly avg = 126K (given)
+  var monthly = [
+    {m:'Jan', key:'2026-01', equip:1080, parts:108},
+    {m:'Feb', key:'2026-02', equip:1150, parts:118},
+    {m:'Mar', key:'2026-03', equip:1210, parts:132},
+    {m:'Apr', key:'2026-04', equip:1240, parts:140},
+    {m:'May', key:'2026-05', equip:1265, parts:130},
+    {m:'Jun', key:'2026-06', equip:1225, parts:128}
+  ];
+  var PARTS_SPLIT = { VM:0.45, Oil:0.20, Breaker:0.35 }; // parts sub-category ratio
+  var PRIOR_YEAR_FACTOR = 1/1.182; // total H1 last year vs this year (+18.2%)
+
+  var transactions = [
+    {date:'2026-06-18', customer:'Planta Zacapa', category:'Equipment', product:'VCB 12kV Vacuum Circuit Breaker Unit', amount:185000, status:'Delivered'},
+    {date:'2026-06-05', customer:'Energía del Sur S.A.', category:'Oil', product:'Insulating Oil (Bulk 5,000L)', amount:42000, status:'Invoiced'},
+    {date:'2026-05-22', customer:'Subestación Escuintla', category:'VM', product:'Vacuum Interrupter Module x8', amount:96500, status:'InTransit'},
+    {date:'2026-05-14', customer:'Grupo Eléctrico Petén', category:'Breaker', product:'24kV Breaker Assembly', amount:128000, status:'Quoted'},
+    {date:'2026-04-30', customer:'Ingenio Guatemala S.A.', category:'Equipment', product:'Switchgear Panel (6-bay)', amount:310000, status:'Delivered'}
+  ];
+
+  var fmt = new Intl.NumberFormat('en-US');
+  function fmtM(v){ return '$' + (v/1000).toFixed(2) + 'M'; }
+  function inRange(key, start, end){ return key >= start && key <= end; }
+
+  // Prior year (2025) monthly totals — derived at a uniform ~18.2% growth ratio vs current year
+  var priorMonthly = [1005,1073,1135,1168,1180,1145]; // aligns to Jan..Jun, sums to ~6,706K
+
+  var barChart, pieChart, lineChart, hbarChart, areaChart;
+  var sortState = {key:'date', dir:'desc'};
+
+  // ================= CHARTS =================
+  function buildCharts(){
+    var ctxLine = document.getElementById('lineChart').getContext('2d');
+    var lineFill = ctxLine.createLinearGradient(0,0,0,260);
+    lineFill.addColorStop(0,'rgba(79,70,229,.22)');
+    lineFill.addColorStop(1,'rgba(79,70,229,0)');
+    lineChart = new Chart(ctxLine, {
+      type:'line',
+      data:{
+        labels: monthly.map(function(d){return d.m;}),
+        datasets:[
+          {label:'2026', data: monthly.map(function(d){return d.equip+d.parts;}), borderColor:'#4F46E5', backgroundColor:lineFill, fill:true, tension:.35, borderWidth:2.5, pointRadius:4, pointBackgroundColor:'#4F46E5', pointBorderColor:'#fff', pointBorderWidth:2},
+          {label:'2025', data: priorMonthly, borderColor:'#CBD2E0', backgroundColor:'transparent', fill:false, borderDash:[5,4], tension:.35, borderWidth:2, pointRadius:3, pointBackgroundColor:'#CBD2E0'}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label:function(c){ return c.dataset.label+': $'+fmt.format(c.raw)+'K'; } } } },
+        scales:{
+          x:{ grid:{display:false}, ticks:{ color:'#94A0B4', font:{size:11.5, weight:600} } },
+          y:{ grid:{color:'#EEF0F6'}, ticks:{ color:'#94A0B4', font:{size:11}, callback:function(v){return '$'+v+'K';} } }
+        }
+      }
+    });
+
+    var ctxBar = document.getElementById('barChart').getContext('2d');
+    barChart = new Chart(ctxBar, {
+      type:'bar',
+      data:{
+        labels: monthly.map(function(d){return d.m;}),
+        datasets:[
+          {label:'Equipment', data: monthly.map(function(d){return d.equip;}), backgroundColor:'#4F46E5', borderRadius:5, maxBarThickness:26},
+          {label:'Parts', data: monthly.map(function(d){return d.parts;}), backgroundColor:'#60A5FA', borderRadius:5, maxBarThickness:26}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label:function(c){ return c.dataset.label+': $'+fmt.format(c.raw)+'K'; } } } },
+        scales:{
+          x:{ grid:{display:false}, ticks:{ color:'#94A0B4', font:{size:11} } },
+          y:{ grid:{color:'#EEF0F6'}, ticks:{ color:'#94A0B4', font:{size:10.5}, callback:function(v){return '$'+v+'K';} } }
+        }
+      }
+    });
+
+    var ctxPie = document.getElementById('pieChart').getContext('2d');
+    pieChart = new Chart(ctxPie, {
+      type:'doughnut',
+      data:{
+        labels:['Equipment','VM','Oil','Breaker'],
+        datasets:[{ data:[0,0,0,0], backgroundColor:['#4F46E5','#60A5FA','#F59E0B','#818CF8'], borderWidth:3, borderColor:'#fff' }]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false, cutout:'68%',
+        plugins:{ legend:{ position:'bottom', labels:{ boxWidth:9, boxHeight:9, usePointStyle:true, pointStyle:'rectRounded', color:'#4B5563', font:{size:11.5, weight:600}, padding:14 } },
+          tooltip:{ callbacks:{ label:function(c){ return c.label+': $'+fmt.format(c.raw)+'K'; } } } }
+      }
+    });
+
+    var ctxHbar = document.getElementById('hbarChart').getContext('2d');
+    hbarChart = new Chart(ctxHbar, {
+      type:'bar',
+      data:{
+        labels:['Equipment','VM','Oil','Breaker'],
+        datasets:[{ data:[0,0,0,0], backgroundColor:['#4F46E5','#60A5FA','#F59E0B','#818CF8'], borderRadius:5, maxBarThickness:22 }]
+      },
+      options:{
+        indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ callbacks:{ label:function(c){ return '$'+fmt.format(c.raw)+'K'; } } } },
+        scales:{
+          x:{ grid:{color:'#EEF0F6'}, ticks:{ color:'#94A0B4', font:{size:10.5}, callback:function(v){return '$'+v+'K';} } },
+          y:{ grid:{display:false}, ticks:{ color:'#4B5563', font:{size:11.5, weight:600} } }
+        }
+      }
+    });
+
+    var ctxArea = document.getElementById('areaChart').getContext('2d');
+    areaChart = new Chart(ctxArea, {
+      type:'line',
+      data:{
+        labels: monthly.map(function(d){return d.m;}),
+        datasets:[
+          {label:'VM', data:[], borderColor:'#4F46E5', backgroundColor:'rgba(79,70,229,.55)', fill:true, tension:.3, pointRadius:0, borderWidth:1.5},
+          {label:'Oil', data:[], borderColor:'#F59E0B', backgroundColor:'rgba(245,158,11,.55)', fill:true, tension:.3, pointRadius:0, borderWidth:1.5},
+          {label:'Breaker', data:[], borderColor:'#818CF8', backgroundColor:'rgba(129,140,248,.55)', fill:true, tension:.3, pointRadius:0, borderWidth:1.5}
+        ]
+      },
+      options:{
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false},
+          tooltip:{ mode:'index', intersect:false, callbacks:{ label:function(c){ return c.dataset.label+': $'+fmt.format(c.raw)+'K'; } } } },
+        interaction:{ mode:'index', intersect:false },
+        scales:{
+          x:{ grid:{display:false}, ticks:{ color:'#94A0B4', font:{size:11.5, weight:600} }, stacked:true },
+          y:{ grid:{color:'#EEF0F6'}, ticks:{ color:'#94A0B4', font:{size:11}, callback:function(v){return '$'+v+'K';} }, stacked:true }
+        }
+      }
+    });
+  }
+
+  function updateCharts(start, end){
+    var rows = monthly.filter(function(d){ return inRange(d.key, start, end); });
+    if(rows.length === 0) rows = monthly;
+    var startIdx = monthly.indexOf(rows[0]);
+    var endIdx = monthly.indexOf(rows[rows.length-1]);
+    var priorRows = priorMonthly.slice(startIdx, endIdx+1);
+
+    lineChart.data.labels = rows.map(function(d){return d.m;});
+    lineChart.data.datasets[0].data = rows.map(function(d){return d.equip+d.parts;});
+    lineChart.data.datasets[1].data = priorRows;
+    lineChart.update();
+    document.getElementById('lineRangeHint').textContent = rows[0].key + ' – ' + rows[rows.length-1].key;
+
+    barChart.data.labels = rows.map(function(d){return d.m;});
+    barChart.data.datasets[0].data = rows.map(function(d){return d.equip;});
+    barChart.data.datasets[1].data = rows.map(function(d){return d.parts;});
+    barChart.update();
+
+    var equipSum = rows.reduce(function(s,d){return s+d.equip;},0);
+    var partsSum = rows.reduce(function(s,d){return s+d.parts;},0);
+    var vm = Math.round(partsSum*PARTS_SPLIT.VM);
+    var oil = Math.round(partsSum*PARTS_SPLIT.Oil);
+    var breaker = partsSum - vm - oil;
+
+    pieChart.data.datasets[0].data = [equipSum, vm, oil, breaker];
+    pieChart.update();
+
+    hbarChart.data.datasets[0].data = [equipSum, vm, oil, breaker];
+    hbarChart.update();
+
+    areaChart.data.labels = rows.map(function(d){return d.m;});
+    areaChart.data.datasets[0].data = rows.map(function(d){return Math.round(d.parts*PARTS_SPLIT.VM);});
+    areaChart.data.datasets[1].data = rows.map(function(d){return Math.round(d.parts*PARTS_SPLIT.Oil);});
+    areaChart.data.datasets[2].data = rows.map(function(d){return d.parts - Math.round(d.parts*PARTS_SPLIT.VM) - Math.round(d.parts*PARTS_SPLIT.Oil);});
+    areaChart.update();
+    document.getElementById('areaRangeHint').textContent = rows[0].key + ' – ' + rows[rows.length-1].key;
+
+    var total = equipSum + partsSum;
+    document.getElementById('pieCenterValue').textContent = fmtM(total);
+    document.getElementById('barRangeHint').textContent = rows[0].key + ' – ' + rows[rows.length-1].key;
+
+    // KPI cards
+    document.getElementById('kpiTotal').textContent = fmtM(total);
+    var priorTotal = total * PRIOR_YEAR_FACTOR;
+    var yoy = ((total - priorTotal) / priorTotal * 100);
+    var badge = document.getElementById('kpiTotalBadge');
+    badge.textContent = (yoy>=0?'▲ ':'▼ ') + Math.abs(yoy).toFixed(1) + '%';
+    badge.className = 'badge ' + (yoy>=0?'up':'down');
+
+    var avgMonthly = total / rows.length;
+    document.getElementById('kpiMonthly').textContent = fmtM(avgMonthly);
+  }
+
+  // ================= TABLE =================
+  function renderTable(){
+    var start = document.getElementById('startDate').value;
+    var end = document.getElementById('endDate').value;
+    var q = document.getElementById('txSearch').value.trim().toLowerCase();
+    var cat = document.getElementById('txFilter').value;
+
+    var rows = transactions.filter(function(t){
+      if(!inRange(t.date, start, end)) return false;
+      if(cat !== 'all' && t.category !== cat) return false;
+      if(q && (t.customer.toLowerCase().indexOf(q)===-1 && t.product.toLowerCase().indexOf(q)===-1)) return false;
+      return true;
+    });
+
+    rows.sort(function(a,b){
+      var k = sortState.key, dir = sortState.dir === 'asc' ? 1 : -1;
+      if(a[k] < b[k]) return -1*dir;
+      if(a[k] > b[k]) return 1*dir;
+      return 0;
+    });
+
+    var tbody = document.getElementById('txBody');
+    if(rows.length === 0){
+      tbody.innerHTML = '<tr class="empty-row"><td colspan="6">No transactions match the selected filters.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(function(t){
+      return '<tr>'+
+        '<td class="mono">'+t.date+'</td>'+
+        '<td>'+t.customer+'</td>'+
+        '<td><span class="cat-pill cat-'+t.category+'">'+t.category+'</span></td>'+
+        '<td>'+t.product+'</td>'+
+        '<td class="amount">$'+fmt.format(t.amount)+'</td>'+
+        '<td><span class="status-pill"><span class="status-dot dot-'+t.status+'"></span>'+t.status.replace('InTransit','In Transit')+'</span></td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  // ================= EVENTS =================
+  document.querySelectorAll('thead th').forEach(function(th){
+    th.addEventListener('click', function(){
+      var key = th.dataset.key;
+      if(sortState.key === key){ sortState.dir = sortState.dir === 'asc' ? 'desc' : 'asc'; }
+      else { sortState = {key:key, dir:'asc'}; }
+      document.querySelectorAll('thead th').forEach(function(h){ h.setAttribute('aria-sort','none'); h.querySelector('.arrow').textContent='↕'; });
+      th.setAttribute('aria-sort', sortState.dir==='asc'?'ascending':'descending');
+      th.querySelector('.arrow').textContent = sortState.dir==='asc' ? '↑' : '↓';
+      renderTable();
+    });
+  });
+
+  document.getElementById('txSearch').addEventListener('input', renderTable);
+  document.getElementById('txFilter').addEventListener('change', renderTable);
+
+  document.getElementById('applyRange').addEventListener('click', function(){
+    var s = document.getElementById('startDate').value;
+    var e = document.getElementById('endDate').value;
+    updateCharts(s.slice(0,7), e.slice(0,7));
+    renderTable();
+  });
+  document.getElementById('resetRange').addEventListener('click', function(){
+    document.getElementById('startDate').value = '2026-01-01';
+    document.getElementById('endDate').value = '2026-06-30';
+    updateCharts('2026-01','2026-06');
+    renderTable();
+  });
+
+  // ================= INIT =================
+  buildCharts();
+  updateCharts('2026-01','2026-06');
+  renderTable();
+})();
+</script>
+</body>
+</html>
